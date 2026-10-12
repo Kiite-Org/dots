@@ -58,7 +58,7 @@ end
 local launcher_default = normalise_keybind("SUPER + SUPER_L")
 create_bind(
     vars.kbLauncher,
-    hl.dsp.global("caelestia:launcher"),
+    kiite("launcher toggle"),
     function(key)
         return normalise_keybind(key) == launcher_default and release or nil
     end
