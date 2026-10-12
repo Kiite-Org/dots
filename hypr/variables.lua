@@ -127,6 +127,8 @@ return {
     kbRecordSound              = "SUPER + ALT + R",
     kbRecordRegion             = "SUPER + SHIFT + ALT + R",
     kbColorPicker              = "SUPER + SHIFT + C",
+    kbOverview                 = "SUPER + TAB",
+    kbCheatSheet               = "SUPER + SHIFT + Slash",
 
     -- Media
     kbMediaToggle              = "CTRL + SUPER + Space",
@@ -144,6 +146,10 @@ return {
     kbLock                     = "SUPER + L",
     kbRestoreLock              = "SUPER + ALT + L",
     kbSleep                    = "SUPER + SHIFT + L",
+    kbKill                     = "CTRL + SUPER + SHIFT + R",
+    kbReload                   = "CTRL + SUPER + ALT + R",
+    kbFocus                    = "SUPER",
+    kbMove                     = "SUPER + SHIFT",
 
     -- Clipboard and emoji picker
     kbClipboard                = "SUPER + V",
