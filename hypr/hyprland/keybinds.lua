@@ -49,6 +49,11 @@ local function extend_keybind(base, suffix)
     return valid_keybind(base) and base .. " + " .. suffix or nil
 end
 
+local function kiite(ipc_call)
+    local str = string.gsub("kiite ipc $call", "%$(%w+)", {call= ipc_call})
+    return hl.dsp.exec_cmd(str)
+end
+
 -- Launcher
 local launcher_default = normalise_keybind("SUPER + SUPER_L")
 create_bind(
@@ -60,23 +65,23 @@ create_bind(
 )
 
 -- Misc
-create_bind(vars.kbSession, hl.dsp.global("caelestia:session"))
-create_bind(vars.kbShowSidebar, hl.dsp.global("caelestia:sidebar"))
-create_bind(vars.kbClearNotifs, hl.dsp.global("caelestia:clearNotifs"), locked)
-create_bind(vars.kbShowPanels, hl.dsp.global("caelestia:showall"))
-create_bind(vars.kbLock, hl.dsp.global("caelestia:lock"))
+create_bind(vars.kbSession, kiite("session toggle"))
+create_bind(vars.kbShowSidebar, kiite("sidebarRight toggle"))
+-- create_bind(vars.kbClearNotifs, hl.dsp.global("caelestia:clearNotifs"), locked)
+-- create_bind(vars.kbShowPanels, hl.dsp.global("caelestia:showall"))
+create_bind(vars.kbLock, kiite("lock activate"))
 
 -- Restore lock
 create_bind(vars.kbRestoreLock, function()
-    hl.dispatch(hl.dsp.exec_cmd("caelestia shell -d"))
-    hl.dispatch(hl.dsp.global("caelestia:lock"))
+    hl.dispatch(hl.dsp.exec_cmd("kiite"))
+    hl.dispatch(kiite("lock activate"))
 end)
 
 -- Kill/restart
-create_bind("CTRL + SUPER + SHIFT + R", hl.dsp.exec_cmd("qs -c caelestia kill"), release)
+create_bind("CTRL + SUPER + SHIFT + R", hl.dsp.exec_cmd("pkill kiite"), release)
 create_bind(
     "CTRL + SUPER + ALT + R",
-    hl.dsp.exec_cmd("qs -c caelestia kill; sleep .1; caelestia shell -d"),
+    hl.dsp.exec_cmd("pkill kiite; sleep .1; kiite"),
     release
 )
 
@@ -164,23 +169,23 @@ create_bind(vars.kbFileExplorer, hl.dsp.exec_cmd(vars.fileExplorer))
 create_bind(vars.kbAudioSettings, hl.dsp.exec_cmd(vars.audioSettings))
 
 -- Utilities
-create_bind(vars.kbScreenshot, hl.dsp.exec_cmd("caelestia screenshot"), locked)
-create_bind(vars.kbScreenshotFreeze, hl.dsp.global("caelestia:screenshotFreeze"))
-create_bind(vars.kbScreenshotRegion, hl.dsp.global("caelestia:screenshot"))
-create_bind(vars.kbRecord, hl.dsp.exec_cmd("caelestia record"))
-create_bind(vars.kbRecordSound, hl.dsp.exec_cmd("caelestia record -s"))
-create_bind(vars.kbRecordRegion, hl.dsp.exec_cmd("caelestia record -r"))
+create_bind(vars.kbScreenshot, kiite("region screenshot"), locked)
+create_bind(vars.kbScreenshotFreeze, kiite("region screenshot"))
+create_bind(vars.kbScreenshotRegion, kiite("region screenshot"))
+create_bind(vars.kbRecord, kiite("recorder screen"))
+create_bind(vars.kbRecordSound, kiite("recorder screenWithSound"))
+create_bind(vars.kbRecordRegion, kiite("recorder region"))
 create_bind(vars.kbColorPicker, hl.dsp.exec_cmd("hyprpicker -a"))
 
 -- Brightness
-create_bind("XF86MonBrightnessUp", hl.dsp.global("caelestia:brightnessUp"), locked)
-create_bind("XF86MonBrightnessDown", hl.dsp.global("caelestia:brightnessDown"), locked)
+create_bind("XF86MonBrightnessUp", kiite("brightness increment"), locked)
+create_bind("XF86MonBrightnessDown", kiite("brightness decrement"), locked)
 
 -- Media
-create_bind({ vars.kbMediaToggle, "XF86AudioPlay", "XF86AudioPause" }, hl.dsp.global("caelestia:mediaToggle"), locked)
-create_bind({ vars.kbMediaNext, "XF86AudioNext" }, hl.dsp.global("caelestia:mediaNext"), locked)
-create_bind({ vars.kbMediaPrev, "XF86AudioPrev" }, hl.dsp.global("caelestia:mediaPrev"), locked)
-create_bind({ vars.kbMediaStop, "XF86AudioStop" }, hl.dsp.global("caelestia:mediaStop"), locked)
+create_bind({ vars.kbMediaToggle, "XF86AudioPlay", "XF86AudioPause" }, kiite("mpris playPause"), locked)
+create_bind({ vars.kbMediaNext, "XF86AudioNext" }, kiite("mpris next"), locked)
+create_bind({ vars.kbMediaPrev, "XF86AudioPrev" }, kiite("mpris previous"), locked)
+create_bind({ vars.kbMediaStop, "XF86AudioStop" }, kiite("mpris pauseAll"), locked)
 
 -- Volume
 create_bind({ vars.kbVolumeMute, "XF86AudioMute" }, hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"), locked)
@@ -205,14 +210,14 @@ create_bind(
 create_bind(vars.kbSleep, hl.dsp.exec_cmd(vars.sleepGestureCmd), locked)
 
 -- Clipboard and emoji picker
-create_bind(vars.kbClipboard, hl.dsp.exec_cmd("pkill fuzzel || caelestia clipboard"))
-create_bind(vars.kbClipboardDel, hl.dsp.exec_cmd("pkill fuzzel || caelestia clipboard -d"))
-create_bind(vars.kbEmoji, hl.dsp.exec_cmd("pkill fuzzel || caelestia emoji -p"))
-create_bind(
-    vars.kbClipboardPasteLatest,
-    hl.dsp.exec_cmd('sleep 0.5s && ydotool type -d 1 "$(cliphist list | head -1 | cliphist decode)"'),
-    locked
-)
+create_bind(vars.kbClipboard, kiite("picker clipboard"))
+-- create_bind(vars.kbClipboardDel, hl.dsp.exec_cmd("pkill fuzzel || caelestia clipboard -d"))
+create_bind(vars.kbEmoji, kiite("picker emoji"))
+-- create_bind(
+--     vars.kbClipboardPasteLatest,
+--     hl.dsp.exec_cmd('sleep 0.5s && ydotool type -d 1 "$(cliphist list | head -1 | cliphist decode)"'),
+--     locked
+-- )
 
 -- Testing
 create_bind(
