@@ -1,4 +1,4 @@
-local scheme = require("scheme.current")
+local scheme = require("scheme.kiite")
 
 hl.config({
     misc = {
