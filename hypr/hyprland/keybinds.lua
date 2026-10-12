@@ -173,7 +173,7 @@ create_bind(vars.kbCloseWindow, hl.dsp.window.close())
 
 -- Special workspace toggles
 create_bind(vars.kbSpecialWs, fn.toggle("specialws"), descs.kbSpecialWs)
-create_bind(vars.kbSystemMonitorWs, fn.toggle("sysmon"), descs.kbSystemMonitorWs)
+create_bind(vars.kbSystemMonitorWs, fn.toggle("sysmon", "taskManager"), descs.kbSystemMonitorWs)
 create_bind(vars.kbMusicWs, fn.toggle("music"), descs.kbMusicWs)
 create_bind(vars.kbCommunicationWs, fn.toggle("communication"), descs.kbCommunicationWs)
 create_bind(vars.kbTodoWs, fn.toggle("todo"), descs.kbTodoWs)
