@@ -277,6 +277,25 @@ local function toggle(special_workspace)
     end
 end
 
+local function merge_tables(t1, t2)
+    local result = {}
+    -- Copy first dictionary
+    if not t1 then
+        return t2
+    end
+    for k, v in pairs(t1) do
+        result[k] = v
+    end
+    -- Copy second dictionary (overwrites duplicates)
+    if not t2 then
+        return t1
+    end
+    for k, v in pairs(t2) do
+        result[k] = v
+    end
+    return result
+end
+
 return {
     resizer              = resizer,
     resize_by_screen     = resize_by_screen,
@@ -284,4 +303,5 @@ return {
     wsaction             = wsaction,
     move_actions         = move_actions,
     toggle               = toggle,
+    merge                = merge_tables
 }
