@@ -127,6 +127,7 @@ return {
     kbColorPicker              = "SUPER + SHIFT + C",
     kbOverview                 = "SUPER + TAB",
     kbCheatSheet               = "SUPER + SHIFT + Slash",
+    kbSettings                 = "SUPER + I",
 
     -- Media
     kbMediaToggle              = "CTRL + SUPER + Space",

@@ -194,6 +194,7 @@ create_bind(vars.kbRecordRegion, kiite("recorder region"), descs.kbRecordRegion)
 create_bind(vars.kbColorPicker, hl.dsp.exec_cmd("hyprpicker -a"), descs.kbColorPicker)
 create_bind(vars.kbOverview, kiite("overview toggle"), descs.kbOverview)
 create_bind(vars.kbCheatSheet, kiite("cheatsheet toggle"), descs.kbCheatSheet)
+create_bind(vars.kbSettings, kiite("settings open"), descs.kbSettings)
 
 -- Brightness
 create_bind("XF86MonBrightnessUp", kiite("brightness increment"), descs.kbBrightnessUp, locked)
