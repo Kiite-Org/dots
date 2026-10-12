@@ -95,29 +95,9 @@ local json       = require("utils.json") -- rxi's peak library
 -- Default config
 local function default_config()
     return {
-        communication = {
-            discord  = { enable = true, match = { { class = "discord" } }, command = { "discord" }, move = true },
-            whatsapp = { enable = true, match = { { class = "whatsapp" } }, move = true },
-        },
-        music = {
-            spotify = {
-                enable  = true,
-                match   = { { class = "Spotify" }, { initial_title = "Spotify" }, { initial_title = "Spotify Free" } },
-                command = { "spicetify", "watch", "-s" },
-                move    = true,
-            },
-            feishin = { enable = true, match = { { class = "feishin" } }, move = true },
-        },
-        sysmon = {
-            btop = {
-                enable  = true,
-                match   = { { class = "btop", title = "btop", workspace = { name = "special:sysmon" } } },
-                command = { "foot", "-a", "btop", "-T", "btop", "fish", "-C", "exec btop" },
-            },
-        },
-        todo = {
-            todoist = { enable = true, match = { { class = "todoist" } }, command = { "todoist" }, move = true },
-        },
+        comms = "discord",
+        musicPlayer = "feishin",
+        todo = "todoist"
     }
 end
 
@@ -164,9 +144,37 @@ end
 -- "if the client is running" etc function
 local function get_clients(clients, app_config, target_special)
     local matched_clients = {}
-    if app_config and app_config.match then
+    if not app_config then return false, matched_clients end
+
+    local match_rules = type(app_config) == "table" and app_config.match
+    local command = type(app_config) == "string" and app_config
+        or type(app_config) == "table" and app_config.command
+
+    local command_match = command
+    if type(command) == "table" then
+        command_match = command[1]
+    elseif type(command) == "string" then
+        local explicit_class = command:match("%-%-class%s+['\"]?([^%s'\"]+)")
+            or command:match("%-%-app%-id%s+['\"]?([^%s'\"]+)")
+            or command:match("%-%-name%s+['\"]?([^%s'\"]+)")
+            or command:match("%-%-title%s+['\"]?([^%s'\"]+)")
+            or command:match("%-%-app%s+['\"]?([^%s'\"]+)")
+            or command:match("%-%-class%s*=%s*['\"]?([^%s'\"]+)")
+        command_match = explicit_class or command:match("^%s*['\"]?([^%s'\"]+)")
+    end
+
+    if not match_rules and command_match then
+        local command_name = tostring(command_match):match("([^/]+)$"):lower()
+        match_rules = {
+            { class = command_name },
+            { title = command_name },
+            { initial_title = command_name },
+        }
+    end
+
+    if match_rules then
         for _, window in ipairs(clients) do
-            for _, rule in ipairs(app_config.match) do
+            for _, rule in ipairs(match_rules) do
                 local is_a_match = true
                 for key, expected_value in pairs(rule) do
                     if not deep_match(get_field(window, key), expected_value) then
@@ -201,7 +209,7 @@ end
 local function load_toggle_config()
     local config = default_config()
 
-    local user_file = io.open(config_dir .. "/caelestia/cli.json", "r") -- CLI config
+    local user_file = io.open(config_dir .. "/kiite/config.json", "r") -- CLI config
     if not user_file then
         return config
     end
@@ -212,6 +220,11 @@ local function load_toggle_config()
     local recognized, conf_or_error = pcall(json.decode, content)
     if recognized and type(conf_or_error) == "table" then
         merge(config, conf_or_error.toggles or {})
+        if type(conf_or_error.apps) == "table" then
+            for app, command in pairs(conf_or_error.apps) do
+                config[app] = command
+            end
+        end
     else
         -- Invalid cli.json: notify and fall back to defaults.
         -- conf_or_error holds the parse error (string) or a non-table value on success.
@@ -228,27 +241,28 @@ end
 local function place_apps(apps, special_workspace)
     local target = "special:" .. special_workspace
     local clients = hl.get_windows() or {}
+    local app_list = type(apps) == "table" and apps or { apps }
 
-    for _, app in pairs(apps) do
-        if app.enable then
-            local is_running, target_clients = get_clients(clients, app, special_workspace)
+    for _, app in pairs(app_list) do
+        local is_running, target_clients = get_clients(clients, app, special_workspace)
 
-            if not is_running then
-                if app.command then
-                    hl.dispatch(hl.dsp.exec_cmd(shell_join(app.command), { workspace = target }))
-                end
-            elseif app.move then
-                for _, target_client in ipairs(target_clients) do
-                    if not target_client.is_in_place then
-                        hl.dispatch(hl.dsp.window.move({ window = target_client.window, workspace = target, follow = false }))
-                    end
-                end
+        if not is_running then
+            local command = type(app) == "table" and app.command or app
+            if command then
+                local command_string = type(command) == "table" and shell_join(command) or tostring(command)
+                hl.dispatch(hl.dsp.exec_cmd(command_string, { workspace = target }))
             end
         end
+        for _, target_client in ipairs(target_clients) do
+            if not target_client.is_in_place then
+                hl.dispatch(hl.dsp.window.move({ window = target_client.window, workspace = target, follow = false }))
+            end
+        end
+        -- end
     end
 end
 
-local function toggle(special_workspace)
+local function toggle(special_workspace, app)
     return function()
         local active_workspace = hl.get_active_special_workspace()
 
@@ -265,7 +279,12 @@ local function toggle(special_workspace)
             hl.dispatch(hl.dsp.focus({ workspace = "special:" .. special_workspace }))
         end
 
-        local apps = load_toggle_config()[special_workspace]
+        local app_name = app or ({
+            communication = "comms",
+            music = "musicPlayer",
+            sysmon = "taskManager",
+        })[special_workspace] or special_workspace
+        local apps = load_toggle_config()[app_name]
         if apps then
             place_apps(apps, special_workspace)
         end
