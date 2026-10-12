@@ -70,6 +70,7 @@ return {
     kbCheatSheet               = "Utilities: Open the cheatsheet",
     kbBrightnessUp             = "Brightness: Increase",
     kbBrightnessDown           = "Brightness: Decrease",
+    kbSettings                 = "Utilities: Open settings",
 
     -- Media
     kbMediaToggle              = "Media: Toggle music player",
