@@ -78,6 +78,7 @@ create_bind(
 -- Misc
 create_bind(vars.kbSession, kiite("session toggle"), descs.kbSession)
 create_bind(vars.kbShowSidebar, kiite("sidebarRight toggle"), descs.kbShowSidebar)
+create_bind(vars.kbShowLeftSidebar, kiite("sidebarLeft toggle"), descs.kbShowLeftSidebar)
 -- create_bind(vars.kbClearNotifs, hl.dsp.global("caelestia:clearNotifs"), locked)
 create_bind(vars.kbShowPanels, function ()
     hl.dispatch(kiite("sidebarLeft toggle"))

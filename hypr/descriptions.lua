@@ -82,6 +82,7 @@ return {
     kbLauncher                 = "General: Open launcher",
     kbSession                  = "General: Show session controls",
     kbShowSidebar              = "General: Open notification panel",
+    kbShowLeftSidebar          = "General: Open the left sidebar",
     kbClearNotifs              = "General: Clear all notifications",
     kbShowPanels               = "General: Show all panels",
     kbLock                     = "General: Lock session",
