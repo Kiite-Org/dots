@@ -142,6 +142,7 @@ return {
     kbLauncher                 = "SUPER + SUPER_L",
     kbSession                  = "CTRL + ALT + Delete",
     kbShowSidebar              = "SUPER + N",
+    kbShowLeftSidebar          = "SUPER + A",
     kbClearNotifs              = "CTRL + ALT + C",
     kbShowPanels               = "SUPER + K",
     kbLock                     = "SUPER + L",
