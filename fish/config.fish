@@ -41,6 +41,6 @@ if status is-interactive
     end
 
     # Custom fish config
-    set -q XDG_CONFIG_HOME && set -l cConf $XDG_CONFIG_HOME/caelestia || set -l cConf $HOME/.config/caelestia
+    set -q XDG_CONFIG_HOME && set -l cConf $XDG_CONFIG_HOME/kiite || set -l cConf $HOME/.config/kiite
     source $cConf/user-config.fish 2> /dev/null
 end
