@@ -1,4 +1,4 @@
-local scheme = require("scheme.kiite")
+local scheme = require("scheme.current")
 
 return {
     ------------------

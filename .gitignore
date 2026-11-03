@@ -11,3 +11,11 @@
 /fish/conf.d/
 
 .SRCINFO
+/caelestia/
+/kitty/
+/nvim/
+
+/kiite/scripts
+/kiite/*.json
+/kiite/*.lua
+/kiite/user-config.fish

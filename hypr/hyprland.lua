@@ -41,7 +41,7 @@ end
 maybe_copy(hypr .. "/scheme/default.lua", hypr .. "/scheme/current.lua")
 
 -- User variables
--- maybe_create(home .. "/.config/kiite/hypr-vars.lua", "return {}\n")
+maybe_create(home .. "/.config/kiite/hypr-vars.lua", "return {}\n")
 local overrides = require("hypr-vars")
 if type(overrides) == "table" then
     local vars = require("variables")
@@ -72,5 +72,5 @@ require("hyprland.gestures")
 require("hyprland.keybinds")
 
 -- User configs
--- maybe_create(home .. "/.config/kiite/hypr-user.lua")
+maybe_create(home .. "/.config/kiite/hypr-user.lua")
 require("hypr-user")
